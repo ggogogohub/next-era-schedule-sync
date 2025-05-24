@@ -1,27 +1,107 @@
+
+import { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+// Pages
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { Dashboard } from "./pages/Dashboard";
+import { Schedule } from "./pages/Schedule";
+import { TimeOff } from "./pages/TimeOff";
+import { Messages } from "./pages/Messages";
+import { TeamManagement } from "./pages/TeamManagement";
+import { ScheduleManagement } from "./pages/ScheduleManagement";
+import { Analytics } from "./pages/Analytics";
+import { Reports } from "./pages/Reports";
+import { Administration } from "./pages/Administration";
+import { Profile } from "./pages/Profile";
+import { Login } from "./pages/Login";
+import { Unauthorized } from "./pages/Unauthorized";
+
+// Components
+import { Layout } from "@/components/layout/Layout";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+
+// Auth
+import { useAuthStore, initializeSessionManagement } from "@/lib/auth";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const { isAuthenticated, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+    initializeSessionManagement();
+  }, [checkAuth]);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            {/* Protected Routes */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }>
+              {/* Redirect root to dashboard */}
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              
+              {/* All user roles */}
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="schedule" element={<Schedule />} />
+              <Route path="time-off" element={<TimeOff />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="profile" element={<Profile />} />
+              
+              {/* Manager and Administrator only */}
+              <Route path="team" element={
+                <ProtectedRoute allowedRoles={['manager', 'administrator']}>
+                  <TeamManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="admin/schedules" element={
+                <ProtectedRoute allowedRoles={['manager', 'administrator']}>
+                  <ScheduleManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="analytics" element={
+                <ProtectedRoute allowedRoles={['manager', 'administrator']}>
+                  <Analytics />
+                </ProtectedRoute>
+              } />
+              <Route path="reports" element={
+                <ProtectedRoute allowedRoles={['manager', 'administrator']}>
+                  <Reports />
+                </ProtectedRoute>
+              } />
+              
+              {/* Administrator only */}
+              <Route path="admin" element={
+                <ProtectedRoute requiredRole="administrator">
+                  <Administration />
+                </ProtectedRoute>
+              } />
+            </Route>
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
