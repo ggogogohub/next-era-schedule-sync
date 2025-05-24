@@ -1,0 +1,143 @@
+
+{
+  "users": [
+    {
+      "user_id": "auth0|admin001",
+      "email": "admin@nextera.com",
+      "name": "System Administrator",
+      "given_name": "System",
+      "family_name": "Administrator",
+      "picture": "https://www.gravatar.com/avatar/admin?d=identicon",
+      "app_metadata": {
+        "role": "administrator",
+        "department": "IT",
+        "position": "System Administrator",
+        "phone": "+1-555-0001",
+        "hire_date": "2020-01-15",
+        "skills": ["System Administration", "Network Management", "Security"],
+        "availability": {
+          "monday": { "start": "08:00", "end": "17:00" },
+          "tuesday": { "start": "08:00", "end": "17:00" },
+          "wednesday": { "start": "08:00", "end": "17:00" },
+          "thursday": { "start": "08:00", "end": "17:00" },
+          "friday": { "start": "08:00", "end": "17:00" }
+        }
+      },
+      "user_metadata": {
+        "preferences": {
+          "notifications": true,
+          "email_alerts": true
+        }
+      }
+    },
+    {
+      "user_id": "auth0|manager001",
+      "email": "manager@nextera.com",
+      "name": "Operations Manager",
+      "given_name": "Operations",
+      "family_name": "Manager",
+      "picture": "https://www.gravatar.com/avatar/manager?d=identicon",
+      "app_metadata": {
+        "role": "manager",
+        "department": "Operations",
+        "position": "Operations Manager",
+        "phone": "+1-555-0002",
+        "hire_date": "2020-03-01",
+        "skills": ["Team Management", "Operations", "Planning"],
+        "availability": {
+          "monday": { "start": "07:00", "end": "18:00" },
+          "tuesday": { "start": "07:00", "end": "18:00" },
+          "wednesday": { "start": "07:00", "end": "18:00" },
+          "thursday": { "start": "07:00", "end": "18:00" },
+          "friday": { "start": "07:00", "end": "18:00" }
+        }
+      }
+    },
+    {
+      "user_id": "auth0|employee001",
+      "email": "employee@nextera.com",
+      "name": "John Employee",
+      "given_name": "John",
+      "family_name": "Employee",
+      "picture": "https://www.gravatar.com/avatar/employee?d=identicon",
+      "app_metadata": {
+        "role": "employee",
+        "department": "Operations",
+        "position": "Field Technician",
+        "phone": "+1-555-0003",
+        "hire_date": "2021-06-15",
+        "skills": ["Electrical Work", "Equipment Maintenance"],
+        "availability": {
+          "monday": { "start": "06:00", "end": "14:00" },
+          "tuesday": { "start": "06:00", "end": "14:00" },
+          "wednesday": { "start": "06:00", "end": "14:00" },
+          "thursday": { "start": "06:00", "end": "14:00" },
+          "friday": { "start": "06:00", "end": "14:00" }
+        }
+      }
+    }
+  ],
+  "schedules": [
+    {
+      "id": "schedule_001",
+      "title": "Weekly Operations Schedule",
+      "description": "Main operations schedule for the week",
+      "startDate": "2024-01-15",
+      "endDate": "2024-01-21",
+      "shifts": [
+        {
+          "id": "shift_001",
+          "employeeId": "auth0|employee001",
+          "date": "2024-01-15",
+          "startTime": "06:00",
+          "endTime": "14:00",
+          "position": "Field Technician",
+          "location": "Site A",
+          "status": "scheduled"
+        },
+        {
+          "id": "shift_002",
+          "employeeId": "auth0|manager001",
+          "date": "2024-01-15",
+          "startTime": "07:00",
+          "endTime": "18:00",
+          "position": "Operations Manager",
+          "location": "Main Office",
+          "status": "scheduled"
+        }
+      ],
+      "createdBy": "auth0|admin001",
+      "createdAt": "2024-01-10T10:00:00Z",
+      "status": "published"
+    }
+  ],
+  "timeOffRequests": [
+    {
+      "id": "timeoff_001",
+      "employeeId": "auth0|employee001",
+      "startDate": "2024-02-01",
+      "endDate": "2024-02-03",
+      "type": "vacation",
+      "reason": "Family vacation",
+      "status": "pending",
+      "requestedAt": "2024-01-20T14:30:00Z",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "comments": []
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_001",
+      "senderId": "auth0|admin001",
+      "recipientIds": ["auth0|employee001", "auth0|manager001"],
+      "subject": "Welcome to NextEra Workforce",
+      "content": "Welcome to our new workforce management system!",
+      "type": "announcement",
+      "priority": "normal",
+      "sentAt": "2024-01-10T09:00:00Z",
+      "readBy": [],
+      "acknowledgedBy": []
+    }
+  ]
+}

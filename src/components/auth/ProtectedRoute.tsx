@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '@/lib/auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { UserRole } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -16,13 +16,13 @@ export const ProtectedRoute = ({
   requiredRole, 
   allowedRoles 
 }: ProtectedRouteProps) => {
-  const { isAuthenticated, user, isLoading, checkAuth } = useAuthStore();
+  const { isAuthenticated, isLoading, user, loginWithRedirect } = useAuth0();
 
   useEffect(() => {
-    if (!isAuthenticated && !isLoading) {
-      checkAuth();
+    if (!isLoading && !isAuthenticated) {
+      loginWithRedirect();
     }
-  }, [isAuthenticated, isLoading, checkAuth]);
+  }, [isLoading, isAuthenticated, loginWithRedirect]);
 
   if (isLoading) {
     return (
@@ -40,12 +40,17 @@ export const ProtectedRoute = ({
     return <Navigate to="/login" replace />;
   }
 
+  // Get user role from Auth0 user metadata
+  const userRole: UserRole = user['https://nextera.com/role'] || 
+                             user.app_metadata?.role || 
+                             'employee';
+
   // Check role-based access
-  if (requiredRole && user.role !== requiredRole) {
+  if (requiredRole && userRole !== requiredRole) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
