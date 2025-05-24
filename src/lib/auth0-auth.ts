@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -8,6 +9,7 @@ interface Auth0Store extends AuthState {
   initializeAuth: () => void;
   loginWithRedirect: (connection?: string) => Promise<void>;
   logout: () => void;
+  setUser: (user: User) => void;
   updateProfile: (profileData: Partial<User>) => Promise<void>;
 }
 
@@ -21,18 +23,18 @@ const mapAuth0UserToUser = (auth0User: any): User => {
   return {
     id: auth0User.sub,
     email: auth0User.email,
-    name: auth0User.name || `${auth0User.given_name || ''} ${auth0User.family_name || ''}`.trim(),
+    firstName: auth0User.given_name || auth0User.name?.split(' ')[0] || '',
+    lastName: auth0User.family_name || auth0User.name?.split(' ')[1] || '',
     role,
-    avatar: auth0User.picture,
     department: auth0User['https://nextera.com/department'] || auth0User.app_metadata?.department,
-    position: auth0User['https://nextera.com/position'] || auth0User.app_metadata?.position,
-    phone: auth0User['https://nextera.com/phone'] || auth0User.app_metadata?.phone,
-    hireDate: auth0User['https://nextera.com/hire_date'] || auth0User.app_metadata?.hire_date,
     skills: auth0User['https://nextera.com/skills'] || auth0User.app_metadata?.skills || [],
-    availability: auth0User['https://nextera.com/availability'] || auth0User.app_metadata?.availability || {},
+    phoneNumber: auth0User['https://nextera.com/phone'] || auth0User.app_metadata?.phone,
+    emergencyContact: auth0User['https://nextera.com/emergency_contact'] || auth0User.app_metadata?.emergency_contact,
     isActive: true,
     createdAt: auth0User.created_at || new Date().toISOString(),
-    updatedAt: auth0User.updated_at || new Date().toISOString()
+    updatedAt: auth0User.updated_at || new Date().toISOString(),
+    lastLogin: auth0User.last_login,
+    availability: auth0User['https://nextera.com/availability'] || auth0User.app_metadata?.availability || []
   };
 };
 
@@ -58,6 +60,13 @@ export const useAuth0Store = create<Auth0Store>()(
           user: null, 
           token: null, 
           isAuthenticated: false 
+        });
+      },
+
+      setUser: (user: User) => {
+        set({ 
+          user, 
+          isAuthenticated: true 
         });
       },
 
@@ -102,7 +111,7 @@ export const useAuth0Bridge = () => {
     } else if (!auth0IsAuthenticated && isAuthenticated) {
       storeLogout();
     }
-  }, [auth0IsAuthenticated, auth0User, isAuthenticated]);
+  }, [auth0IsAuthenticated, auth0User, isAuthenticated, setUser, storeLogout]);
 
   const handleLogout = () => {
     storeLogout();
