@@ -128,14 +128,6 @@ export const useAuth0Bridge = () => {
     });
   };
 
-  const handleMicrosoftLogin = () => {
-    loginWithRedirect({
-      authorizationParams: {
-        connection: 'windowslive'
-      }
-    });
-  };
-
   const handleEmailLogin = () => {
     loginWithRedirect({
       authorizationParams: {
@@ -152,7 +144,6 @@ export const useAuth0Bridge = () => {
     loginWithRedirect,
     logout: handleLogout,
     googleLogin: handleGoogleLogin,
-    microsoftLogin: handleMicrosoftLogin,
     emailLogin: handleEmailLogin
   };
 };
